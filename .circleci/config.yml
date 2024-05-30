@@ -41,7 +41,7 @@ commands:
                 ls /home
       - run:
           command: |
-                cat /home/circleci/
+                ls /home/circleci/
       - run:
           command: |
                 cat /home/circleci/oidc_token.json
