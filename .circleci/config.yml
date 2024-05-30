@@ -38,6 +38,12 @@ commands:
                 --credential-source-file=<< parameters.oidc_token_file_path >>
       - run:
           command: |
+                ls /home
+      - run:
+          command: |
+                cat /home/circleci/
+      - run:
+          command: |
                 cat /home/circleci/oidc_token.json
       - run:
           command: |
