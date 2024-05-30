@@ -38,6 +38,9 @@ commands:
                 --credential-source-file=<< parameters.oidc_token_file_path >>
       - run:
           command: |
+                cat /home/circleci/oidc_token.json
+      - run:
+          command: |
                 cat /home/circleci/gcp_cred_config.json
 
   gcp-oidc-authenticate:
