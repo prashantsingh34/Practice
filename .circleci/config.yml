@@ -8,16 +8,16 @@ commands:
     description: "Authenticate with GCP using a CircleCI OIDC token."
     parameters:
       project_id:
-        type: env_var_name
-        default: GCP_PROJECT_ID
+        type: string
+        default: "elite-totality-418717"
       workload_identity_pool_id:
-        type: env_var_name
+        type: string
         default: "cicd"
       workload_identity_pool_provider_id:
-        type: env_var_name
+        type: string
         default: "circleci"
       service_account_email:
-        type: env_var_name
+        type: string
         default: "ci-pipeline@elite-totality-418717.iam.gserviceaccount.com"
       gcp_cred_config_file_path:
         type: string
