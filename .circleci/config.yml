@@ -12,13 +12,13 @@ commands:
         default: GCP_PROJECT_ID
       workload_identity_pool_id:
         type: env_var_name
-        default: GCP_WIP_ID
+        default: "cicd"
       workload_identity_pool_provider_id:
         type: env_var_name
-        default: GCP_WIP_PROVIDER_ID
+        default: "circleci"
       service_account_email:
         type: env_var_name
-        default: GCP_SERVICE_ACCOUNT_EMAIL
+        default: "ci-pipeline@elite-totality-418717.iam.gserviceaccount.com"
       gcp_cred_config_file_path:
         type: string
         default: /home/circleci/gcp_cred_config.json
@@ -28,9 +28,6 @@ commands:
     steps:
       - run:
           command: |
-            # Store OIDC token in temp file
-            echo $CIRCLE_OIDC_TOKEN > << parameters.oidc_token_file_path >>
-            # Create a credential configuration for the generated OIDC ID Token
             gcloud iam workload-identity-pools create-cred-config \
                 "projects/${<< parameters.project_id >>}/locations/global/workloadIdentityPools/${<< parameters.workload_identity_pool_id >>}/providers/${<< parameters.workload_identity_pool_provider_id >>}"\
                 --output-file="<< parameters.gcp_cred_config_file_path >>" \
