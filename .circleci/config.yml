@@ -55,7 +55,7 @@ commands:
             echo "export GOOGLE_APPLICATION_CREDENTIALS='<< parameters.gcp_cred_config_file_path >>'" | tee -a "$BASH_ENV"
       - run:
           command: |
-            gcloud iam service-accounts get-iam-policy "${GCP_SERVICE_ACCOUNT_EMAIL}"
+            gcloud config list project
 jobs:
   gcp-oidc-defaults:
     executor: gcp-cli/default
