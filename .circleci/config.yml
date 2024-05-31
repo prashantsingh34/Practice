@@ -32,10 +32,10 @@ commands:
             echo $CIRCLE_OIDC_TOKEN > << parameters.oidc_token_file_path >>
             # Create a credential configuration for the generated OIDC ID Token
             gcloud iam workload-identity-pools create-cred-config \
-                "projects/elite-totality-418717/locations/global/workloadIdentityPools/cicd/providers/circleci"\
-                --output-file="<< parameters.gcp_cred_config_file_path >>" \
-                --service-account="${<< parameters.service_account_email >>}" \
-                --credential-source-file=<< parameters.oidc_token_file_path >>
+                projects/elite-totality-418717/locations/global/workloadIdentityPools/cicd/providers/circleci\
+                --output-file=/home/circleci/gcp_cred_config.json \
+                --service-account=wifmanager@elite-totality-418717.iam.gserviceaccount.com \
+                --credential-source-file=/home/circleci/oidc_token.json
       - run:
           command: |
                 ls /home
@@ -59,7 +59,7 @@ commands:
       - run:
           command: |
             # Configure gcloud to leverage the generated credential configuration
-            gcloud auth login --brief --cred-file "<< parameters.gcp_cred_config_file_path >>"
+            gcloud auth login --brief --cred-file=/home/circleci/gcp_cred_config.json
             # Configure ADC
             echo "export GOOGLE_APPLICATION_CREDENTIALS='<< parameters.gcp_cred_config_file_path >>'" | tee -a "$BASH_ENV"
 jobs:
@@ -73,7 +73,7 @@ jobs:
           name: Verify that gcloud is authenticated
           environment:
             GCP_SERVICE_ACCOUNT_EMAIL: wifmanager@elite-totality-418717.iam.gserviceaccount.com
-          command: gcloud iam service-accounts get-iam-policy "${GCP_SERVICE_ACCOUNT_EMAIL}"
+          command: gcloud iam service-accounts get-iam-policy wifmanager@elite-totality-418717.iam.gserviceaccount.com
 
 workflows:
   main:
