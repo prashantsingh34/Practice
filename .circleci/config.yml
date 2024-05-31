@@ -69,6 +69,10 @@ jobs:
               ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
               curl -f -i -H "Content-Type: application/x-www-form-urlencoded" -d "access_token=${ACCESS_TOKEN}" https://www.googleapis.com/oauth2/v1/tokeninfo
       - run:
+          name: Set project
+          command: |
+              gcloud config set project elite-totality-418717
+      - run:
           name: create instance
           command: |
               gcloud compute instances create INSTANCE_NAMES --zone=us-west1-a
