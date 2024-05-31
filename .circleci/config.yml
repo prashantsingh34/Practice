@@ -9,16 +9,16 @@ commands:
     parameters:
       project_id:
         type: string
-        default: "elite-totality-418717"
+        default: elite-totality-418717
       workload_identity_pool_id:
         type: string
-        default: "cicd"
+        default: cicd
       workload_identity_pool_provider_id:
         type: string
-        default: "circleci"
+        default: circleci
       service_account_email:
         type: string
-        default: "ci-pipeline@elite-totality-418717.iam.gserviceaccount.com"
+        default: wifmanager@elite-totality-418717.iam.gserviceaccount.com
       gcp_cred_config_file_path:
         type: string
         default: /home/circleci/gcp_cred_config.json
@@ -72,7 +72,7 @@ jobs:
       - run:
           name: Verify that gcloud is authenticated
           environment:
-            GCP_SERVICE_ACCOUNT_EMAIL: wifmanager@elite-totality-418717.iam.gserviceaccount.com:generateAccessToken
+            GCP_SERVICE_ACCOUNT_EMAIL: wifmanager@elite-totality-418717.iam.gserviceaccount.com
           command: gcloud iam service-accounts get-iam-policy "${GCP_SERVICE_ACCOUNT_EMAIL}"
 
 workflows:
