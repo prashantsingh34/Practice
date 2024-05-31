@@ -23,8 +23,8 @@ commands:
         type: string
         default: /home/circleci/gcp_cred_config.json
       oidc_token_file_path:
-        type: env_var_name
-        default: CIRCLE_OIDC_TOKEN_FILE
+        type: string
+        default: /home/circleci/oidc_token.json
     steps:
       - run:
           command: |
