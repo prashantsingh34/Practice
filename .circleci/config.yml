@@ -32,7 +32,7 @@ commands:
             echo $CIRCLE_OIDC_TOKEN > << parameters.oidc_token_file_path >>
             # Create a credential configuration for the generated OIDC ID Token
             gcloud iam workload-identity-pools create-cred-config \
-                projects/elite-totality-418717/locations/global/workloadIdentityPools/cicd/providers/circleci\
+                projects/elite-totality-418717/locations/global/workloadIdentityPools/cicd/providers/circleci-provider\
                 --output-file=/home/circleci/gcp_cred_config.json \
                 --service-account=wifmanager@elite-totality-418717.iam.gserviceaccount.com \
                 --credential-source-file=/home/circleci/oidc_token.json
