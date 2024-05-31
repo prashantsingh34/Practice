@@ -1,4 +1,4 @@
-version: 2.1
+version: "2.1"
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
@@ -7,22 +7,22 @@ commands:
   gcp-oidc-generate-cred-config-file:
     description: "Authenticate with GCP using a CircleCI OIDC token."
     parameters:
-      project_id:
-        type: string
-        default: elite-totality-418717
-      workload_identity_pool_id:
-        type: string
-        default: cicd
-      workload_identity_pool_provider_id:
-        type: string
-        default: circleci
-      service_account_email:
-        type: string
-        default: wifmanager@elite-totality-418717.iam.gserviceaccount.com
-      gcp_cred_config_file_path:
+      project_id: 
+        type: env_var_name
+        default: GCP_PROJECT_ID
+      workload_identity_pool_id: 
+        type: env_var_name
+        default: GCP_WIP_ID
+      workload_identity_pool_provider_id: 
+        type: env_var_name
+        default: GCP_WIP_PROVIDER_ID
+      service_account_email: 
+        type: env_var_name
+        default: GCP_SERVICE_ACCOUNT_EMAIL
+      gcp_cred_config_file_path: 
         type: string
         default: /home/circleci/gcp_cred_config.json
-      oidc_token_file_path:
+      oidc_token_file_path: 
         type: string
         default: /home/circleci/oidc_token.json
     steps:
@@ -32,36 +32,25 @@ commands:
             echo $CIRCLE_OIDC_TOKEN > << parameters.oidc_token_file_path >>
             # Create a credential configuration for the generated OIDC ID Token
             gcloud iam workload-identity-pools create-cred-config \
-                projects/elite-totality-418717/locations/global/workloadIdentityPools/cicd/providers/circleci-provider\
-                --output-file=/home/circleci/gcp_cred_config.json \
-                --service-account=wifmanager@elite-totality-418717.iam.gserviceaccount.com \
-                --credential-source-file=/home/circleci/oidc_token.json
-      - run:
-          command: |
-                ls /home
-      - run:
-          command: |
-                ls /home/circleci/
-      - run:
-          command: |
-                cat /home/circleci/oidc_token.json
-      - run:
-          command: |
-                cat /home/circleci/gcp_cred_config.json
+                "projects/${<< parameters.project_id >>}/locations/global/workloadIdentityPools/${<< parameters.workload_identity_pool_id >>}/providers/${<< parameters.workload_identity_pool_provider_id >>}"\
+                --output-file="<< parameters.gcp_cred_config_file_path >>" \
+                --service-account="${<< parameters.service_account_email >>}" \
+                --credential-source-file=<< parameters.oidc_token_file_path >>
 
   gcp-oidc-authenticate:
     description: "Authenticate with GCP using a GCP credentials file."
     parameters:
-      gcp_cred_config_file_path:
+      gcp_cred_config_file_path: 
         type: string
         default: /home/circleci/gcp_cred_config.json
     steps:
       - run:
           command: |
             # Configure gcloud to leverage the generated credential configuration
-            gcloud auth login --brief --cred-file=/home/circleci/gcp_cred_config.json
+            gcloud auth login --brief --cred-file "<< parameters.gcp_cred_config_file_path >>"
             # Configure ADC
-            echo "export GOOGLE_APPLICATION_CREDENTIALS='<< parameters.gcp_cred_config_file_path >>'" | tee -a "$BASH_ENV"
+            echo "export GOOGLE_APPLICATION_CREDENTIALS='<< parameters.gcp_cred_config_file_path >>'" | tee -a $BASH_ENV
+
 jobs:
   gcp-oidc-defaults:
     executor: gcp-cli/default
@@ -73,12 +62,17 @@ jobs:
           name: Verify that gcloud is authenticated
           environment:
             GCP_SERVICE_ACCOUNT_EMAIL: wifmanager@elite-totality-418717.iam.gserviceaccount.com
-          command: gcloud iam service-accounts get-iam-policy wifmanager@elite-totality-418717.iam.gserviceaccount.com
+          command: gcloud iam service-accounts get-iam-policy "${GCP_SERVICE_ACCOUNT_EMAIL}"
+      - run:
+          name: Verify that ADC works
+          command: |
+              ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+              curl -f -i -H "Content-Type: application/x-www-form-urlencoded" -d "access_token=${ACCESS_TOKEN}" https://www.googleapis.com/oauth2/v1/tokeninfo
 
 workflows:
   main:
-    jobs:
+    jobs: 
       - gcp-oidc-defaults:
           name: Generate Creds File and Authenticate
-          context:
+          context: 
           - myContext
