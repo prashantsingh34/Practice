@@ -9,8 +9,8 @@ USERNAME=$3
 CHART_YAML_PATH="cart-service/Chart.yaml"  # Adjust the path to the Chart.yaml file in the Helm repo
 GIT_BRANCH="main"  # Branch to push the changes to
 # Clone the Helm chart repository
-GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
-git clone "git@github.com:$HELM_REPO_URL.git"
+git clone "https://github.com/$HELM_REPO_URL.git"
+git remote set-url origin git@github.com:$HELM_REPO_URL.git
 cd $(basename "$HELM_REPO_URL")
 
 # Extract the current version
