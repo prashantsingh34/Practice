@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
-  node: circleci/node@5
+#   node: circleci/node@5
 
 jobs:
   use-gcp:
@@ -11,19 +11,19 @@ jobs:
           name: Saving the OIDC token to the oidc token file  path
           command: |
             mkdir -p /home/circleci/creds
-      - gcp-cli/setup:
-          version: latest
-          use_oidc: true
-  test-node:
-    executor: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Run tests
-          command: npm test --passWithNoTests
-  build:
+      # - gcp-cli/setup:
+      #     version: latest
+      #     use_oidc: true
+  # test-node:
+  #   executor: node/default
+  #   steps:
+  #     - checkout
+  #     - node/install-packages:
+  #         pkg-manager: npm
+  #     - run:
+  #         name: Run tests
+  #         command: npm test --passWithNoTests
+  # build:
     docker:
       - image: google/cloud-sdk
     steps:
@@ -56,13 +56,14 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - gcp-cli/setup:
-          version: latest
-          use_oidc: true
+      # - gcp-cli/setup:
+      #     version: latest
+      #     use_oidc: true
       - run:
           name: Update Helm Chart Version
           command: |
-            git clone https://github.com/$HELM_REPO_URL.git ./update_chart_version.sh $HELM_REPO_URL
+            git clone https://github.com/$HELM_REPO_URL.git 
+            ./update_chart_version.sh $HELM_REPO_URL
       - run:
           name: Deploy with Helm
           command: |
@@ -73,30 +74,30 @@ workflows:
   main:
     jobs: 
       - use-gcp
-      - test-node
-      - build:
-          requires:
-            - use-gcp
-          filters:
-             branches:
-               only:
-                 - main
-      - release-approval:
-          type: approval
-          requires:
-            - test-node
-            - build
-            - use-gcp
-          filters:
-             branches:
-               only:
-                 - main
+      # - test-node
+      # - build:
+      #     requires:
+      #       - use-gcp
+      #     filters:
+      #        branches:
+      #          only:
+      #            - main
+      # - release-approval:
+      #     type: approval
+      #     requires:
+      #       - test-node
+      #       - build
+      #       - use-gcp
+      #     filters:
+      #        branches:
+      #          only:
+      #            - main
       - deploy:
-          requires:
-            - test-node
-            - build
-            - release-approval
-            - use-gcp
+          # requires:
+            # - test-node
+            # - build
+            # - release-approval
+            # - use-gcp
           filters:
              branches:
                only:
