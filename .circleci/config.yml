@@ -1,22 +1,8 @@
 version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
-parameters:
-  google_project_number: 
-    type: string
-    default: $GOOGLE_PROJECT_NUMBER
-  workload_identity_pool_id: 
-    type: string
-    default: $GCP_WIP_ID
-  workload_identity_pool_provider_id: 
-    type: string
-    default: $GCP_WIP_PROVIDER_ID
-  service_account_email: 
-    type: string
-    default: $GCP_SERVICE_ACCOUNT_EMAIL
-  gcp_cred_config_file_path: 
-    type: string
-    default: /home/circleci/creds/gcp_cred_config.json
+  node: circleci/node@5
+
 jobs:
   use-gcp:
     executor: gcp-cli/default
@@ -28,11 +14,78 @@ jobs:
       - gcp-cli/setup:
           version: latest
           use_oidc: true
+  test-node:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
       - run:
-          name: Creating an  instance
-          command: gcloud compute instances create instance --zone=us-west4-b
+          name: Run tests
+          command: npm test --passWithNoTests
+  build:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run:
+          name: Set up Docker for gcloud
+          command: |
+            gcloud auth configure-docker us-central1-docker.pkg.dev
+      - run:
+          name: Docker build
+          command: |
+            docker build -t react-app .
+      - run:
+          name: Tag Docker image
+          command: |
+            docker tag react-app us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image
+      - run:
+          name: Push docker image
+          command: | 
+            docker push us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Update the container image for the instance
+          command: |
+            gcloud compute instances update-container virtual-machine --project=elite-totality-418717 --zone us-west4-b  --container-image=us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image:latest
+  
 
 workflows:
-  build-test-deploy:
-    jobs:
+  main:
+    jobs: 
       - use-gcp
+      - test-node
+      - build:
+          requires:
+            - use-gcp
+          filters:
+             branches:
+               only:
+                 - main
+      - release-approval:
+          type: approval
+          requires:
+            - test-node
+            - build
+            - use-gcp
+          filters:
+             branches:
+               only:
+                 - main
+      - deploy:
+          requires:
+            - test-node
+            - build
+            - release-approval
+            - use-gcp
+          filters:
+             branches:
+               only:
+                 - main 
