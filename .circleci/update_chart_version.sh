@@ -7,7 +7,7 @@ HELM_REPO_URL=$1
 EMAIL=$2
 CHART_YAML_PATH="cart-service/Chart.yaml"  # Adjust the path to the Chart.yaml file in the Helm repo
 GIT_BRANCH="main"  # Branch to push the changes to
-# Clone the Helm chart repository
+# Clone the Helm chart repository 
 git clone "https://prashant:${TOKEN}@github.com/$HELM_REPO_URL.git"
 # git clone https://<username>:<token>@github.com/username/repository.git
 
