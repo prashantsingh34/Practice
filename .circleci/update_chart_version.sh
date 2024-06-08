@@ -31,14 +31,14 @@ rm "$CHART_YAML_PATH.bak"
 # Commit and push the changes
 git config --global user.email "prashantsingh830@gmail.com"
 git config --global user.name "Prashant"
-git checkout -b update-chart-version
+# git checkout -b update-chart-version
 git add "$CHART_YAML_PATH"
-git commit -m "Update Helm chart version to $NEW_VERSION"
-git push origin update-chart-version
+# git commit -m "Update Helm chart version to $NEW_VERSION"
+git push origin
 
 # Create a pull request (optional)
 PR_TITLE="Update Helm chart version to $NEW_VERSION"
 PR_BODY="This PR updates the Helm chart version to $NEW_VERSION."
-gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base $GIT_BRANCH
+# gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base $GIT_BRANCH
 
 echo "Helm chart version updated and changes pushed successfully."
