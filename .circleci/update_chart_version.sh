@@ -4,6 +4,8 @@ set -e
 
 # Variables
 HELM_REPO_URL=$1
+EMAIL=$2
+USERNAME=$3
 CHART_YAML_PATH="cart-service/Chart.yaml"  # Adjust the path to the Chart.yaml file in the Helm repo
 GIT_BRANCH="main"  # Branch to push the changes to
 
@@ -27,8 +29,8 @@ sed -i.bak "s/^version: .*/version: $NEW_VERSION/" "$CHART_YAML_PATH"
 rm "$CHART_YAML_PATH.bak"
 
 # Commit and push the changes
-git config --global user.email "your-email@example.com"
-git config --global user.name "Your Name"
+git config --global user.email "prashantsingh830@gmail.com"
+git config --global user.name "Prashant"
 git checkout -b update-chart-version
 git add "$CHART_YAML_PATH"
 git commit -m "Update Helm chart version to $NEW_VERSION"
