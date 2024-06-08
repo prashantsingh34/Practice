@@ -28,29 +28,9 @@ jobs:
       - gcp-cli/setup:
           version: latest
           use_oidc: true
-          # service_account_email: $OIDC_SERVICE_ACCOUNT_EMAIL
-          # gcp_cred_config_file_path: home/circleci/creds/gcp_cred_config.json
-          # workload_identity_pool_id: $OIDC_WIP_ID   
-          # workload_identity_pool_provider_id: $OIDC_WIP_PROVIDER_ID
-          # google_project_number: $GOOGLE_PROJECT_NUMBER
-          # google_project_number:
-          #   default: $GOOGLE_PROJECT_NUMBER
-          #   type: env_var_name
-          # service_account_email:
-          #   default: $OIDC_SERVICE_ACCOUNT_EMAIL
-          #   type: env_var_name
-          # use_oidc:
-          #   default: false
-          # type: boolean
-          # workload_identity_pool_id:
-          #   default: $OIDC_WIP_ID
-          #   type: env_var_name
-          # workload_identity_pool_provider_id:
-          #   default: OIDC_WIP_PROVIDER_ID
-          #   type: env_var_name
-          # gcp_cred_config_file_path:
-          #   default: ~/gcp_cred_config.json
-          #   type: string
+      - run:
+          name: Creating an  instance
+          command: gcloud compute instances create instance --zone=us-west4-b
 
 workflows:
   build-test-deploy:
