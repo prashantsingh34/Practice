@@ -28,6 +28,9 @@ jobs:
       - image: google/cloud-sdk
     steps:
       - checkout
+      - gcp-cli/setup:
+          version: latest
+          use_oidc: true
       - run:
           name: Set up Docker for gcloud
           command: |
@@ -51,6 +54,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - gcp-cli/setup:
+          version: latest
+          use_oidc: true
       - run:
           name: Update the container image for the instance
           command: |
