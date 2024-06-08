@@ -31,6 +31,8 @@ jobs:
       - gcp-cli/setup:
           version: latest
           use_oidc: true
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Set up Docker for gcloud
           command: |
