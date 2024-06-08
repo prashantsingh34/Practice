@@ -62,8 +62,8 @@ jobs:
       - run:
           name: Update Helm Chart Version
           command: |
-            git clone https://github.com/$HELM_REPO_URL.git 
-            ./update_chart_version.sh $HELM_REPO_URL
+            # git clone https://github.com/$HELM_REPO_URL.git 
+            bash .circleci/update_chart_version.sh $HELM_REPO_URL
       - run:
           name: Deploy with Helm
           command: |
