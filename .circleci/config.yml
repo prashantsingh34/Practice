@@ -63,7 +63,7 @@ jobs:
           name: Update Helm Chart Version
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
-            bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $USERNAME
+            bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN
       - run:
           name: Deploy with Helm
           command: |

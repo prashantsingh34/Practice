@@ -5,12 +5,12 @@ set -e
 # Variables
 HELM_REPO_URL=$1
 EMAIL=$2
-USERNAME=$3
 CHART_YAML_PATH="cart-service/Chart.yaml"  # Adjust the path to the Chart.yaml file in the Helm repo
 GIT_BRANCH="main"  # Branch to push the changes to
 # Clone the Helm chart repository
-git clone "https://github.com/$HELM_REPO_URL.git"
-git remote set-url origin git@github.com:$HELM_REPO_URL.git
+git clone "https://prashant:${TOKEN}@github.com/$HELM_REPO_URL.git"
+# git clone https://<username>:<token>@github.com/username/repository.git
+
 cd $(basename "$HELM_REPO_URL")
 
 # Extract the current version
