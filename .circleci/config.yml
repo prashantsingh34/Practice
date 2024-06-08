@@ -60,9 +60,13 @@ jobs:
           version: latest
           use_oidc: true
       - run:
-          name: Update the container image for the instance
+          name: Update Helm Chart Version
           command: |
-            gcloud compute instances update-container virtual-machine --project=elite-totality-418717 --zone us-west4-b  --container-image=us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image:latest
+            git clone https://github.com/$HELM_REPO_URL.git ./update_chart_version.sh $HELM_REPO_URL
+      - run:
+          name: Deploy with Helm
+          command: |
+            helm upgrade my-release ./chart --install --values ./chart/values.yaml
   
 
 workflows:
