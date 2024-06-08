@@ -13,7 +13,9 @@ jobs:
             mkdir -p /home/circleci/creds
       - run:
           name: Getting last tag
-          command: export LAST_TAG=$(git describe --tags --abbrev=0)
+          command: |
+            export LAST_TAG=$(git describe --tags --abbrev=0)
+            echo $CIRCLE_TAG
       # - gcp-cli/setup:
       #     version: latest
       #     use_oidc: true
