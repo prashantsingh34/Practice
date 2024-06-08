@@ -64,10 +64,6 @@ jobs:
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
             bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN
-      - run:
-          name: Deploy with Helm
-          command: |
-            helm upgrade my-release ./chart --install --values ./chart/values.yaml
   
 
 workflows:

@@ -33,8 +33,8 @@ git config --global user.email "prashantsingh830@gmail.com"
 git config --global user.name "Prashant"
 # git checkout -b update-chart-version
 git add "$CHART_YAML_PATH"
-# git commit -m "Update Helm chart version to $NEW_VERSION"
-git push origin
+git commit -m "Update Helm chart version to $NEW_VERSION"
+git push origin main
 
 # Create a pull request (optional)
 PR_TITLE="Update Helm chart version to $NEW_VERSION"
