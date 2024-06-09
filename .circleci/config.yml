@@ -84,13 +84,12 @@ jobs:
             echo "the new tag is , $NEW_TAG"
 
 
-
       - run:
           name: Update Helm Chart Version
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
             # bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN $NEW_VERSION
-            echo "the new tag is , $NEW_TAG"
+            echo "the new tag is , $NEW_TAG"            
             git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
 
             # git clone https://<username>:<token>@github.com/username/repository.git
@@ -111,7 +110,7 @@ jobs:
             git config --global user.email "prashantsingh830@gmail.com"
             git config --global user.name "Prashant"
             git add .
-            git commit -m "Update Helm chart version to $NEW_VERSION"
+            git commit -m "Update Helm chart version to $NEW_TAG"
             git push origin main
 
 
