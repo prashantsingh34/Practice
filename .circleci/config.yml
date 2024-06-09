@@ -145,10 +145,11 @@ workflows:
   main:
     jobs: 
       # - use-gcp
-      # - test-node
+      - test-node
       - build:
           requires:
             # - use-gcp
+            - test-node
           filters:
              branches:
                only:
