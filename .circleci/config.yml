@@ -81,8 +81,7 @@ jobs:
 
             # Push the tag to the remote repository (adjust URL if needed)
             git push origin --tags
-            echo "the new tag is , $NEW_TAG"
-            echo "the new tag is , $NEW_TAG"            
+    
             git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
 
             # git clone https://<username>:<token>@github.com/username/repository.git
@@ -90,12 +89,12 @@ jobs:
             cd $(basename "$HELM_REPO_URL")
 
             # Update the version in Chart.yaml
-            sed -i.bak "s/^version: .*/version: $NEW_TAG/" "cart-service/Chart.yaml"
+            sed -i.bak "s/^version: .*/version: $new_tag/" "cart-service/Chart.yaml"
             rm "cart-service/Chart.yaml.bak"
 
             #Update the version in values.yaml
             # Update the tag in values.yaml
-            sed -i "s/^ *tag: .*/  tag: \"$NEW_TAG\"/" "cart-service/values.yaml"
+            sed -i "s/^ *tag: .*/  tag: \"$new_tag\"/" "cart-service/values.yaml"
             # sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
             # rm "$IMAGE_YAML_PATH.bak"
 
