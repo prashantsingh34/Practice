@@ -63,8 +63,25 @@ jobs:
           name: Checking last used tag
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-            git tag $(git-semver -no-pre)
-            echo "New version: $NEW_VERSION"
+            major_version=$(echo "$latest_tag" | cut -d '.' -f 1)
+            minor_version=$(echo "$latest_tag" | cut -d '.' -f 2)
+            patch_version=$(echo "$latest_tag" | cut -d '.' -f 3)
+
+            # Increment patch version (avoiding if-else)
+            new_patch_version=$((patch_version + 1))
+
+            # Construct the new tag with incremented patch version
+            new_tag="v${major_version}.${minor_version}.${new_patch_version}"
+
+            # Print the new tag for verification (optional)
+            echo "New tag: $new_tag"
+
+            # Create the tag (ensure you're on the correct commit before pushing)
+            git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
+
+            # Push the tag to the remote repository (adjust URL if needed)
+            git push origin --tags
+
 
 
 
