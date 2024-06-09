@@ -73,9 +73,7 @@ jobs:
 
             cd $(basename "$HELM_REPO_URL")
 
-            sed -i.bak "s/^version: .*/version: $latest_tag/" "cart-service/Chart.yaml"
-            rm "cart-service/Chart.yaml.bak"
-
+            sed -i "s/^version: .*/version: $latest_tag/" "cart-service/Chart.yaml"
             sed -i "s/^ *tag: .*/  tag: \"$latest_tag\"/" "cart-service/values.yaml"
 
             # Commit and push the changes
