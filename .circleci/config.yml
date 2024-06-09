@@ -89,7 +89,32 @@ jobs:
           name: Update Helm Chart Version
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
-            bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN $NEW_VERSION
+            # bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN $NEW_VERSION
+            git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
+            # git clone https://<username>:<token>@github.com/username/repository.git
+
+            cd $(basename "$HELM_REPO_URL")
+
+            # Update the version in Chart.yaml
+            sed -i.bak "s/^version: .*/version: $NEW_VERSION/" "cart-service/Chart.yaml"
+            rm "cart-service/Chart.yaml.bak"
+
+            #Update the version in values.yaml
+            # Update the tag in values.yaml
+            sed -i "s/^ *tag: .*/  tag: \"$NEW_VERSION\"/" "cart-service/values.yaml"
+            # sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
+            # rm "$IMAGE_YAML_PATH.bak"
+
+            # Commit and push the changes
+            git config --global user.email "prashantsingh830@gmail.com"
+            git config --global user.name "Prashant"
+            git add .
+            git commit -m "Update Helm chart version to $NEW_VERSION"
+            git push origin main
+
+
+            echo "Helm chart version updated and changes pushed successfully."
+
   
 
 workflows:
