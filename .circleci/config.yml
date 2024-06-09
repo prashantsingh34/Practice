@@ -66,7 +66,9 @@ jobs:
             major_version=$(echo "$latest_tag" | cut -d '.' -f 1)
             minor_version=$(echo "$latest_tag" | cut -d '.' -f 2)
             patch_version=$(echo "$latest_tag" | cut -d '.' -f 3)
-
+            echo "Major version: $major_version"
+            echo "Minor version: $minor_version"
+            echo "Patch version: $patch_version"
             # Increment patch version (avoiding if-else)
             new_patch_version=$((patch_version + 1))
 
