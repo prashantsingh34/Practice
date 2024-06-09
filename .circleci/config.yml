@@ -71,11 +71,11 @@ jobs:
             new_patch_version=$((patch_version + 1))
 
             # Construct the new tag with incremented patch version
-            export new_tag="${major_version}.${minor_version}.${new_patch_version}"
+            new_tag="${major_version}.${minor_version}.${new_patch_version}"
 
             # Print the new tag for verification (optional)
             echo "New tag: $new_tag"
-
+            export NEW_TAG="$new_tag"
             # Create the tag (ensure you're on the correct commit before pushing)
             git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
 
@@ -91,17 +91,18 @@ jobs:
             # git clone https://github.com/$HELM_REPO_URL.git 
             # bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN $NEW_VERSION
             git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
+            echo $NEW_TAG
             # git clone https://<username>:<token>@github.com/username/repository.git
 
             cd $(basename "$HELM_REPO_URL")
 
             # Update the version in Chart.yaml
-            sed -i.bak "s/^version: .*/version: $new_tag/" "cart-service/Chart.yaml"
+            sed -i.bak "s/^version: .*/version: $NEW_TAG/" "cart-service/Chart.yaml"
             rm "cart-service/Chart.yaml.bak"
 
             #Update the version in values.yaml
             # Update the tag in values.yaml
-            sed -i "s/^ *tag: .*/  tag: \"$new_tag\"/" "cart-service/values.yaml"
+            sed -i "s/^ *tag: .*/  tag: \"$NEW_TAG\"/" "cart-service/values.yaml"
             # sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
             # rm "$IMAGE_YAML_PATH.bak"
 
