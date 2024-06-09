@@ -4,25 +4,25 @@ orbs:
 #   node: circleci/node@5
 
 jobs:
-  use-gcp:
-    executor: gcp-cli/default
-    steps:
-      - run:
-          name: Saving the OIDC token to the oidc token file  path
-          command: |
-            mkdir -p /home/circleci/creds
-      # - gcp-cli/setup:
-      #     version: latest
-      #     use_oidc: true
-  # test-node:
-  #   executor: node/default
+  # use-gcp:
+  #   executor: gcp-cli/default
   #   steps:
-  #     - checkout
-  #     - node/install-packages:
-  #         pkg-manager: npm
   #     - run:
-  #         name: Run tests
-  #         command: npm test --passWithNoTests
+  #         name: Saving the OIDC token to the oidc token file  path
+  #         command: |
+  #           mkdir -p /home/circleci/creds
+  #     # - gcp-cli/setup:
+  #     #     version: latest
+  #     #     use_oidc: true
+  test-node:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Run tests
+          command: npm test --passWithNoTests
   build:
     docker:
       - image: google/cloud-sdk
@@ -144,7 +144,7 @@ jobs:
 workflows:
   main:
     jobs: 
-      - use-gcp
+      # - use-gcp
       # - test-node
       - build:
           requires:
@@ -168,7 +168,7 @@ workflows:
             # - test-node
             - build
             # - release-approval
-            - use-gcp
+            # - use-gcp
           filters:
              branches:
                only:
