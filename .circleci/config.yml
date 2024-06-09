@@ -63,10 +63,7 @@ jobs:
           name: Checking last used tag
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-            # Extract major, minor, and patch versions using echo and read
-            echo "$latest_tag" | { read major minor patch && ((patch++)); NEW_VERSION="$major.$minor.$patch"; }
-
-            # Display the new version
+            git tag $(git-semver -no-pre)
             echo "New version: $NEW_VERSION"
 
 
