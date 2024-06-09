@@ -23,32 +23,49 @@ jobs:
   #     - run:
   #         name: Run tests
   #         command: npm test --passWithNoTests
-  # build:
-    # docker:
-    #   - image: google/cloud-sdk
-    # steps:
-    #   - checkout
-    #   - gcp-cli/setup:
-    #       version: latest
-    #       use_oidc: true
-    #   - setup_remote_docker:
-    #       docker_layer_caching: true
-    #   - run:
-    #       name: Set up Docker for gcloud
-    #       command: |
-    #         gcloud auth configure-docker us-central1-docker.pkg.dev
-    #   - run:
-    #       name: Docker build
-    #       command: |
-    #         docker build -t react-app .
-    #   - run:
-    #       name: Tag Docker image
-    #       command: |
-    #         docker tag react-app us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image
-    #   - run:
-    #       name: Push docker image
-    #       command: | 
-    #         docker push us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image
+  build:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - gcp-cli/setup:
+          version: latest
+          use_oidc: true
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Updating the git tag version
+          command: |
+            last_tag=$(git describe --tags --abbrev=0)
+            major_version=$(echo "$last_tag" | cut -d '.' -f 1)
+            minor_version=$(echo "$last_tag" | cut -d '.' -f 2)
+            patch_version=$(echo "$last_tag" | cut -d '.' -f 3)
+
+            # Construct the new tag with incremented patch version
+            new_tag="${major_version}.${minor_version}.${(patch_version+1)}"
+            # Create the tag (ensure you're on the correct commit before pushing)
+            git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
+
+            # Push the tag to the remote repository (adjust URL if needed)
+            git push origin --tags          
+      - run:
+          name: Set up Docker for gcloud
+          command: |
+            gcloud auth configure-docker us-central1-docker.pkg.dev
+      - run:
+          name: Docker build
+          command: |
+            docker build -t react-app .
+      - run:
+          name: Tag Docker image
+          command: |
+            latest_tag=$(git describe --tags --abbrev=0)
+            docker tag react-app us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image:${latest_tag}
+      - run:
+          name: Push docker image
+          command: |
+            latest_tag=$(git describe --tags --abbrev=0)
+            docker push us-central1-docker.pkg.dev/elite-totality-418717/react-portfolio/portfolio-image:${latest_tag}
   deploy:
     docker:
       - image: google/cloud-sdk
@@ -60,27 +77,9 @@ jobs:
       #     version: latest
       #     use_oidc: true
       - run:
-          name: Checking last used tag
+          name: Updating image tag nad version of Helm Chart
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-            major_version=$(echo "$latest_tag" | cut -d '.' -f 1)
-            minor_version=$(echo "$latest_tag" | cut -d '.' -f 2)
-            patch_version=$(echo "$latest_tag" | cut -d '.' -f 3)
-            echo "Major version: $major_version"
-            echo "Minor version: $minor_version"
-            echo "Patch version: $patch_version"
-            # Increment patch version (avoiding if-else)
-            new_patch_version=$((patch_version + 1))
-
-            # Construct the new tag with incremented patch version
-            new_tag="${major_version}.${minor_version}.${new_patch_version}"
-
-            echo 'export NEW_TAG="$new_tag"' >> "$BASH_ENV"
-            # Create the tag (ensure you're on the correct commit before pushing)
-            git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
-
-            # Push the tag to the remote repository (adjust URL if needed)
-            git push origin --tags
     
             git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
 
@@ -89,12 +88,12 @@ jobs:
             cd $(basename "$HELM_REPO_URL")
 
             # Update the version in Chart.yaml
-            sed -i.bak "s/^version: .*/version: $new_tag/" "cart-service/Chart.yaml"
+            sed -i.bak "s/^version: .*/version: $latest_tag/" "cart-service/Chart.yaml"
             rm "cart-service/Chart.yaml.bak"
 
             #Update the version in values.yaml
             # Update the tag in values.yaml
-            sed -i "s/^ *tag: .*/  tag: \"$new_tag\"/" "cart-service/values.yaml"
+            sed -i "s/^ *tag: .*/  tag: \"$latest_tag\"/" "cart-service/values.yaml"
             # sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
             # rm "$IMAGE_YAML_PATH.bak"
 
@@ -147,13 +146,13 @@ workflows:
     jobs: 
       - use-gcp
       # - test-node
-      # - build:
-      #     requires:
-      #       - use-gcp
-      #     filters:
-      #        branches:
-      #          only:
-      #            - main
+      - build:
+          requires:
+            - use-gcp
+          filters:
+             branches:
+               only:
+                 - main
       # - release-approval:
       #     type: approval
       #     requires:
@@ -165,11 +164,11 @@ workflows:
       #          only:
       #            - main
       - deploy:
-          # requires:
+          requires:
             # - test-node
-            # - build
+            - build
             # - release-approval
-            # - use-gcp
+            - use-gcp
           filters:
              branches:
                only:
