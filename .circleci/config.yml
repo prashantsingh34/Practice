@@ -71,7 +71,7 @@ jobs:
             new_patch_version=$((patch_version + 1))
 
             # Construct the new tag with incremented patch version
-            new_tag="v${major_version}.${minor_version}.${new_patch_version}"
+            new_tag="${major_version}.${minor_version}.${new_patch_version}"
 
             # Print the new tag for verification (optional)
             echo "New tag: $new_tag"

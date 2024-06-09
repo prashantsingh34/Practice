@@ -32,14 +32,15 @@ rm "$CHART_YAML_PATH.bak"
 
 #Update the version in values.yaml
 # Update the tag in values.yaml
-sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
-rm "$IMAGE_YAML_PATH.bak"
+sed -i "s/^ *tag: .*/  tag: \"$NEW_VERSION\"/" "$IMAGE_YAML_PATH"
+# sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
+# rm "$IMAGE_YAML_PATH.bak"
 
 # Commit and push the changes
 git config --global user.email "prashantsingh830@gmail.com"
 git config --global user.name "Prashant"
 # git checkout -b update-chart-version
-git add "$CHART_YAML_PATH"
+git add .
 git commit -m "Update Helm chart version to $NEW_VERSION"
 git push origin main
 
