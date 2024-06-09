@@ -81,7 +81,7 @@ jobs:
 
             # Push the tag to the remote repository (adjust URL if needed)
             git push origin --tags
-
+            echo "the new tag is , $NEW_TAG"
 
 
 
@@ -90,8 +90,9 @@ jobs:
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
             # bash .circleci/update_chart_version.sh $HELM_REPO_URL $EMAIL $TOKEN $NEW_VERSION
+            echo "the new tag is , $NEW_TAG"
             git clone "https://prashant:$TOKEN@github.com/$HELM_REPO_URL.git"
-            echo $NEW_TAG
+
             # git clone https://<username>:<token>@github.com/username/repository.git
 
             cd $(basename "$HELM_REPO_URL")
