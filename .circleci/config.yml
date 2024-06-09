@@ -62,28 +62,14 @@ jobs:
       - run:
           name: Checking last used tag
           command: |
-            # Fetch the latest tags from the Git repository
-            # Get the latest tag
             latest_tag=$(git describe --tags --abbrev=0)
-
-            # Split the version components into an array
             IFS='.' read -r -a version_parts <<< "$latest_tag"
-
-            # Extract the major, minor, and patch components
             major=${version_parts[0]}
             minor=${version_parts[1]}
             patch=${version_parts[2]}
-
-            # Increment the patch version
             new_patch=$((patch + 1))
-
-            # Create the new version string
             new_version="$major.$minor.$new_patch"
-
-            # Store the new version in an environment variable
             export NEW_VERSION=$new_version
-
-            # Display the new version
             echo "New version: $NEW_VERSION"
 
 
