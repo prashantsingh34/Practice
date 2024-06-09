@@ -40,9 +40,9 @@ jobs:
             major_version=$(echo "$last_tag" | cut -d '.' -f 1)
             minor_version=$(echo "$last_tag" | cut -d '.' -f 2)
             patch_version=$(echo "$last_tag" | cut -d '.' -f 3)
-
+            new_patch_version=$((patch_version + 1))
             # Construct the new tag with incremented patch version
-            new_tag="${major_version}.${minor_version}.${(patch_version+1)}"
+            new_tag="${major_version}.${minor_version}.${new_patch_version}"
             # Create the tag (ensure you're on the correct commit before pushing)
             git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
 
