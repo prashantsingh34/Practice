@@ -148,7 +148,7 @@ workflows:
       # - test-node
       - build:
           requires:
-            - use-gcp
+            # - use-gcp
           filters:
              branches:
                only:
