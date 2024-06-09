@@ -63,8 +63,7 @@ jobs:
           name: Checking last used tag
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-
-            NEW_VERSION=$(echo "$latest_tag + 0.0.1" | bc)
+            IFS='.' read -r major minor patch <<< "$latest_tag"
             echo "New version: $NEW_VERSION"
 
 
