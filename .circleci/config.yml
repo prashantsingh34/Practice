@@ -49,12 +49,12 @@ jobs:
           name: Tag Docker image
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-            docker tag react-app us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/react-portfolio/portfolio-image:${latest_tag}
+            docker tag react-app us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/shopping-cart/shopping-cart-image:${latest_tag}
       - run:
           name: Push docker image
           command: |
             latest_tag=$(git describe --tags --abbrev=0)
-            docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/react-portfolio/portfolio-image:${latest_tag}
+            docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/shopping-cart/shopping-cart-image:${latest_tag}
   deploy:
     docker:
       - image: google/cloud-sdk
@@ -69,7 +69,6 @@ jobs:
     
             git clone "https://$USERNAME:$TOKEN@github.com/$HELM_REPO_URL.git"
 
-            # git clone https://<username>:<token>@github.com/username/repository.git
 
             cd $(basename "$HELM_REPO_URL")
 
