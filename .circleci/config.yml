@@ -75,9 +75,7 @@ jobs:
             # Construct the new tag with incremented patch version
             new_tag="${major_version}.${minor_version}.${new_patch_version}"
 
-            # Print the new tag for verification (optional)
-            echo "New tag: $new_tag"
-            export NEW_TAG="$new_tag"
+            echo 'export NEW_TAG="$new_tag"' >> "$BASH_ENV"
             # Create the tag (ensure you're on the correct commit before pushing)
             git tag -a "$new_tag" -m "Auto-generated tag: $new_tag"
 
