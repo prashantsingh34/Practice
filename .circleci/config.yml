@@ -64,6 +64,10 @@ jobs:
       #     version: latest
       #     use_oidc: true
       - run:
+          name: Checking last used tag
+          command: git describe --tags --abbrev=0
+
+      - run:
           name: Update Helm Chart Version
           command: |
             # git clone https://github.com/$HELM_REPO_URL.git 
