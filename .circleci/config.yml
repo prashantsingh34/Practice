@@ -96,12 +96,12 @@ jobs:
             cd $(basename "$HELM_REPO_URL")
 
             # Update the version in Chart.yaml
-            sed -i.bak "s/^version: .*/version: $NEW_VERSION/" "cart-service/Chart.yaml"
+            sed -i.bak "s/^version: .*/version: $new_tag/" "cart-service/Chart.yaml"
             rm "cart-service/Chart.yaml.bak"
 
             #Update the version in values.yaml
             # Update the tag in values.yaml
-            sed -i "s/^ *tag: .*/  tag: \"$NEW_VERSION\"/" "cart-service/values.yaml"
+            sed -i "s/^ *tag: .*/  tag: \"$new_tag\"/" "cart-service/values.yaml"
             # sed -i.bak 's/tag: ".*"/tag: "'$NEW_VERSION'"/' "$IMAGE_YAML_PATH"
             # rm "$IMAGE_YAML_PATH.bak"
 
